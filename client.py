@@ -11,6 +11,7 @@ except socket.error:
     sys.exit()
 
 print 'Socket Created'
+print 'teste github'
 
 host = 'localhost';
 port = 8880;
