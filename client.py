@@ -14,7 +14,7 @@ print 'Socket Created'
 print 'teste github vamo que da'
 
 host = 'localhost';
-port = 8880;
+port = 8882;
 
 try:
     remote_ip = socket.gethostbyname( host )
@@ -45,5 +45,9 @@ print 'Message send successfully'
 
 #Now receive data
 reply = s.recv(4096)
-
 print reply
+if '200'in reply:
+    resposta = reply.split(' ', 2)
+    binary = open(resposta[1], "wb")
+    binary.write(resposta[2])
+    #print resposta[2]
