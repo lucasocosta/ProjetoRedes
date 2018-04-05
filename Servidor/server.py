@@ -1,9 +1,10 @@
 import socket
 import sys
 import glob, os
+import os.path
 from thread import *
 
-os.chdir("content/")
+path="content/"
 HOST = ''   # Symbolic name meaning all available interfaces
 PORT = 8880 # Arbitrary non-privileged port
 
@@ -24,6 +25,46 @@ print 'Socket bind complete'
 s.listen(10)
 print 'Socket now listening'
 
+def get(data):
+    Lista=data.split()
+    reply=''
+    if "GET" in Lista:
+        reply = 'HTTP/1.1 '
+        arq=str(Lista[1])
+        if arq.endswith('/'): #se eh diretorio
+            get_dir(path+arq)
+        else:
+            arq=arq[1:] #remove o / do inicio
+            if os.path.isfile(path+arq):
+                reply = reply+get_ok(path+arq)
+            else:
+                reply = reply+get_notFound(path)
+    return reply
+
+def get_ok(arquivo):
+    reply=''
+    binary = open(arquivo, "rb")
+    reply = reply+'200 OK'+'\n\n'
+    reply = reply + binary.read()+"\n\n"
+    return reply
+def get_dir(path):
+    reply=''
+    if os.path.isfile(path+"index.html"):
+        reply = reply+get_ok(path+arq)
+    else:
+        for file in glob.glob("*.*"):
+            reply = file +'\n'+reply
+    return reply
+def get_notFound(arquivo):
+    reply=''
+    reply = reply+'404 not_found'+'\n\n'
+    binary = open(path+"404.html", "rb")
+    reply = reply + binary.read()+"\n\n"
+    return reply
+
+def mkIndexOf():
+    return
+
 #Function for handling connections. This will be used to create threads
 def clientthread(conn):
     #Sending message to connected client
@@ -34,27 +75,7 @@ def clientthread(conn):
 
         #Receiving from client
         data = conn.recv(1024)
-        Lista=data.split()
-        #print(Lista)
-        if "GET" in Lista:
-            reply = 'HTTP/1.1 '
-            arq=str(Lista[1])
-
-            if(arq=='/'):
-                for file in glob.glob("*.*"):
-                    reply = file +'\n'+reply
-            else:
-                arq=arq[1:]
-                for file in glob.glob("*.*"):
-                    if(file==arq):
-                        binary = open(file, "rb")
-                        reply = reply+'200 OK'+'\n\n'
-                        reply = reply + binary.read()+"\n\n"
-                        break
-                if '200' not in reply:
-                    reply = reply+'404 not_found'+'\n\n'
-                    binary = open("404.html", "rb")
-                    reply = reply + binary.read()+"\n\n"
+        reply=get(data)
         if not data:
             break
         print reply

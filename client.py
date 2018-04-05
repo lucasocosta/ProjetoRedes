@@ -44,7 +44,7 @@ except socket.error:
 print 'Message send successfully'
 
 #Now receive data
-reply = s.recv(4096)
+reply = s.recv(400096)
 print reply
 if '200'in reply:
     resposta = reply.split(' ', 3)
