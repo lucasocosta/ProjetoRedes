@@ -13,8 +13,8 @@ except socket.error:
 print 'Socket Created'
 print 'teste github vamo que da'
 
-host = 'localhost';
-port = 8880;
+host = 'google.com';
+port = 80;
 
 try:
     remote_ip = socket.gethostbyname( host )
@@ -44,10 +44,14 @@ except socket.error:
 print 'Message send successfully'
 
 #Now receive data
-reply = s.recv(400096)
-print reply
+reply = s.recv(4096)
+#print reply
 if '200'in reply:
     resposta = reply.split(' ', 3)
+    cu = resposta[3].split('\r\n\r\n', 2)
+    restos=s.recv(int(cu[0])+4096)
     binary = open(texto, "wb")
-    binary.write(resposta[3])
+    total=cu[1]+restos
+    binary.write(total)
+    binary.close()
     #print resposta[2]
