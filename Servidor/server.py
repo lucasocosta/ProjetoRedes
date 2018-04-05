@@ -5,7 +5,7 @@ from thread import *
 
 os.chdir("content/")
 HOST = ''   # Symbolic name meaning all available interfaces
-PORT = 8882 # Arbitrary non-privileged port
+PORT = 8886 # Arbitrary non-privileged port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print 'Socket created'
@@ -35,6 +35,7 @@ def clientthread(conn):
         data = conn.recv(1024)
         Lista=data.split()
         print(Lista)
+        reply = 'HTTP/1.1 '
         if "GET" in Lista:
             arq=str(Lista[1])
 
@@ -46,13 +47,18 @@ def clientthread(conn):
                 for file in glob.glob("*.*"):
                     if(file==arq):
                         binary = open(file, "rb")
-                        reply = '200 ' + file+' '
+                        reply = reply+'200 OK'+'\n\n'
                         reply = reply + binary.read()
                         break
                 if '200' not in reply:
-                    reply = '404'
+                    reply=''
+                    reply = reply+'404 Not Found'+'\n\n'
+                    binary = open("404.html", "rb")
+                    reply = reply + binary.read()
         if not data:
             break
+        print reply
+        input("teste")
         conn.sendall(reply)
     Lista=[]
     #came out of loop
