@@ -5,9 +5,10 @@ from thread import *
 
 os.chdir("content/")
 HOST = ''   # Symbolic name meaning all available interfaces
-PORT = 8886 # Arbitrary non-privileged port
+PORT = 8880 # Arbitrary non-privileged port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 print 'Socket created'
 
 #Bind socket to local host and port
@@ -34,9 +35,9 @@ def clientthread(conn):
         #Receiving from client
         data = conn.recv(1024)
         Lista=data.split()
-        print(Lista)
-        reply = 'HTTP/1.1 '
+        #print(Lista)
         if "GET" in Lista:
+            reply = 'HTTP/1.1 '
             arq=str(Lista[1])
 
             if(arq=='/'):
@@ -48,17 +49,16 @@ def clientthread(conn):
                     if(file==arq):
                         binary = open(file, "rb")
                         reply = reply+'200 OK'+'\n\n'
-                        reply = reply + binary.read()
+                        reply = reply + binary.read()+"\n\n"
                         break
                 if '200' not in reply:
-                    reply=''
-                    reply = reply+'404 Not Found'+'\n\n'
+                    reply = reply+'404 not_found'+'\n\n'
                     binary = open("404.html", "rb")
-                    reply = reply + binary.read()
+                    reply = reply + binary.read()+"\n\n"
         if not data:
             break
         print reply
-        input("teste")
+        #input("teste")
         conn.sendall(reply)
     Lista=[]
     #came out of loop
