@@ -12,8 +12,8 @@ except socket.error:
 
 print 'Socket Created'
 
-host = 'google.com';
-port = 80;
+host = 'localhost;
+port = 8080;
 
 try:
     remote_ip = socket.gethostbyname( host )
@@ -30,7 +30,7 @@ print 'Socket Connected to ' + host + ' on ip ' + remote_ip
 
 texto=raw_input("url: ")
 #Send some data to remote server
-message = "GET /"+texto+" HTTP/1.1\r\n\r\n"
+message = "GET /"+texto+" HTTP/1.1\r\nAccept: text/html\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0\r\n\r\n"
 print(message)
 try :
     #Set the whole string
