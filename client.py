@@ -11,7 +11,6 @@ except socket.error:
     sys.exit()
 
 print 'Socket Created'
-print 'teste github vamo que da'
 
 host = 'google.com';
 port = 80;
@@ -31,7 +30,7 @@ print 'Socket Connected to ' + host + ' on ip ' + remote_ip
 
 texto=raw_input("url: ")
 #Send some data to remote server
-message = "GET /"+texto+" HTTP/1.1\r\nUser-Agent: Mozilla/4.0 (compatible; MSIE5.01; Windows NT)\r\nHost: "+host+"\r\nAccept-Language: en-us\r\nAccept-Encoding: gzip, deflate\r\nConnection: Keep-Alive"
+message = "GET /"+texto+" HTTP/1.1\r\n\r\n"
 print(message)
 try :
     #Set the whole string
@@ -45,13 +44,22 @@ print 'Message send successfully'
 
 #Now receive data
 reply = s.recv(4096)
-#print reply
-if '200'in reply:
-    resposta = reply.split(' ', 3)
-    cu = resposta[3].split('\r\n\r\n', 2)
-    restos=s.recv(int(cu[0])+4096)
-    binary = open(texto, "wb")
-    total=cu[1]+restos
-    binary.write(total)
-    binary.close()
-    #print resposta[2]
+
+r=reply.split('\r\n\r\n', 2)
+header=r[0].split()
+tamanho=0
+resto=''
+if "Content-Length:" in header:
+    i=header.index("Content-Length:")
+    tamanho=header[i+1]
+    if int(tamanho)>4096:
+        resto=s.recv(int(tamanho))
+if str(header[1]) != "200":
+    texto="erro"+header[1]+".html"
+print header
+print r[1]
+print resto
+binary = open(texto, "wb")
+binary.write(r[1])
+binary.write(resto)
+binary.close()

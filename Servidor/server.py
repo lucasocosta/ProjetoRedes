@@ -55,12 +55,12 @@ def get_dir(path):
         reply = reply+get_ok(path+"index.html")
     else:
         reply = reply+'200 OK'+'\r\n'
-        reply=reply+'Content-Length: '+str(4000)+'\r\n\r\n'
+        reply=reply+'Content-Length: '+str(sys.getsizeof(mkIndexOf(path)))+'\r\n\r\n'
         reply = reply+mkIndexOf(path)
     return reply
 def get_notFound(arquivo):
     reply=''
-    reply = reply+'404 not_found'+'\r\n\r\n'
+    reply = reply+'404 not_found'+'\r\n'
     binary = open(path+"404.html", "rb")
     tamanho=os.path.getsize(path+"404.html")
     reply=reply+'Content-Length: '+str(tamanho)+'\r\n\r\n'
