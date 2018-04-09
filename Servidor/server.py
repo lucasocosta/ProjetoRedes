@@ -4,9 +4,11 @@ import glob, os
 import os.path
 from thread import *
 
-path="content/"
+
+
+path=sys.argv[1]
 HOST = ''   # Symbolic name meaning all available interfaces
-PORT = 8880 # Arbitrary non-privileged port
+PORT = int(sys.argv[2]) # Arbitrary non-privileged port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

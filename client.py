@@ -4,6 +4,7 @@ import socket   #for sockets
 import sys  #for exit
 from urlparse import urlparse
 
+
 #create an INET, STREAMing socket
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,7 +14,7 @@ except socket.error:
 
 print 'Socket Created'
 
-url = urlparse("http://localhost:8880")
+url = urlparse(sys.argv[1])
 
 host = url.hostname
 port = url.port
