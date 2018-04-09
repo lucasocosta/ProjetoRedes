@@ -2,6 +2,7 @@
 
 import socket   #for sockets
 import sys  #for exit
+from urlparse import urlparse
 
 #create an INET, STREAMing socket
 try:
@@ -12,9 +13,12 @@ except socket.error:
 
 print 'Socket Created'
 
-host = 'localhost;
-port = 8080;
+url = urlparse("http://localhost:8880")
 
+host = url.hostname
+port = url.port
+if(port==None):
+    port=80
 try:
     remote_ip = socket.gethostbyname( host )
 
@@ -28,13 +32,13 @@ s.connect((remote_ip , port))
 
 print 'Socket Connected to ' + host + ' on ip ' + remote_ip
 
-texto=raw_input("url: ")
+texto=url.path
 #Send some data to remote server
-message = "GET /"+texto+" HTTP/1.1\r\nAccept: text/html\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0\r\n\r\n"
+message = "GET /"+texto+" HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0\r\n\r\n"
 print(message)
 try :
     #Set the whole string
-    s.sendall(message)
+    s.sendall(message.encode())
 except socket.error:
     #Send failed
     print 'Send failed'
@@ -59,6 +63,9 @@ if str(header[1]) != "200":
 print header
 print r[1]
 print resto
+if texto =='' or texto =='/':
+    texto="/index.html"
+texto=texto[1:]
 binary = open(texto, "wb")
 binary.write(r[1])
 binary.write(resto)
